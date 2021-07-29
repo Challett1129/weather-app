@@ -20,3 +20,15 @@ hr {
 .weatherBox {
     border: 1px solid black;
 }
+
+.safe {
+    background-color:green
+}
+
+.moderate {
+    background-color:orange
+}
+
+.dangerous {
+    background-color: red; 
+}

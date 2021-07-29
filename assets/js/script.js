@@ -10,19 +10,19 @@ let formSubmitHandler = function() {
 
     let search = searchValue.value.trim();
     if(search) {
-        getWeatherData(search);
+        getCity(search);
     };
 };
 
 //get response from api 
-const getWeatherData = function(city) {
+const getCity = function(city) {
     const apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc"
     fetch(apiUrl).then(function(response){
         //check if there is a response
         if(response.ok){ 
             response.json().then(function(data) {
-                // console.log(data.list[0].main.temp, data.list[0].main.humidity, data.list[0].wind.speed);
-                displayWeatherData(data, city);
+                // displayWeatherData(data, city);
+                getWeatherData(data,city);
             })
         } else {
             //let user know if there was an issues 
@@ -35,24 +35,35 @@ const getWeatherData = function(city) {
     });
 };
 
+getWeatherData = function(location, city) {
+    //set variables to insert in the api 
+    let lat = location.city.coord.lat
+    let lon = location.city.coord.lon
+
+    const apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc`
+    fetch(apiUrl).then(function(response){
+        if(response.ok) {
+            response.json().then(function(data) {
+                displayWeatherData(data, city);
+            })
+        } else {
+            alert("Error: City Not Found");
+        };
+    })
+    .catch(function(error) {
+        alert("Unable to connect");
+    });
+}; 
+
 //displays weather data on page
 const displayWeatherData = function(data, city) {
-    console.log(data.list)
-    //take unix date and turn it into a readable date
+
+    // take unix date and turn it into a readable date
     getDate(data, 0);
-    console.log(data.list[0].uv)
+
     weatherEl.textContent="";
 
     let weatherBox = document.createElement("div");
-    // weatherBox.innerHTML = (
-    //     `<h2>${city} ${dateDisplay}</h2>
-    //     <ul> 
-    //     <li>Temp: ${data.list[0].main.temp}℉</li>
-    //     <li>Wind: ${data.list[0].wind.speed} MPH</li>
-    //     <li>Humidity: ${data.list[0].main.humidity}%</li>
-    //     </ul>`
-        
-    // )
     //creates a header element to store the city name, date, and weather icon
     let timeAndCity = document.createElement("h2") 
     timeAndCity.textContent = (`${city.toUpperCase()} ${dateDisplay}`);
@@ -61,35 +72,78 @@ const displayWeatherData = function(data, city) {
     let weatherDesc = document.createElement("ul");
     //creates a listed item for the day's temperature 
     let temp = document.createElement("li");
-    temp.textContent = (`Temp: ${data.list[0].main.temp}℉`);
+    temp.textContent = (`Temp: ${data.daily[0].temp.day}℉`);
 
     //creates a listed item for the day's wind speed
     let wind = document.createElement("li");
-    wind.textContent = (`Wind: ${data.list[0].wind.speed} MPH`)
+    wind.textContent = (`Wind: ${data.daily[0].wind_speed} MPH`)
 
     //creates a listed item for the day's humidity 
     let humidity = document.createElement("li");
-    humidity.textContent = (`Humidity: ${data.list[0].main.humidity}%`);
+    humidity.textContent = (`Humidity: ${data.daily[0].humidity}%`);
 
-    //creates a colord-coded item for the day's UV 
-    // let uv = document.createElement("li"); 
-    // uv = data.list[0].
-    
-    
+    let uv = data.daily[0].uvi
+    let uvSpan = document.createElement("span");
+    uvSpan.textContent = uv;
+
+    let uvEl = document.createElement("li");
+    if(uv <=3) {
+        uvSpan.className += "safe"
+    } else if (uv > 3 && uv <=6) {
+        uvSpan.className += "moderate";
+    } else {
+        uvSpan.className += "dangerous";
+    } 
+
+    uvEl.textContent = (`UV Index: `);
+    uvEl.append(uvSpan);
+
     weatherDesc.append(temp);
     weatherDesc.append(wind);
     weatherDesc.append(humidity);
+    weatherDesc.append(uvEl);
     
 
     weatherBox.append(timeAndCity);
     weatherBox.append(weatherDesc);
     weatherEl.appendChild(weatherBox);
+
+    displayFutureWeather(data, city);
 };
+
+displayFutureWeather = function(data,city) {
+    console.log(data);
+    console.log(city);
+
+    for(i=1; i < 6; i++) {
+        let weatherBox = document.createElement("div");
+    //creates an unordered list to store the weather descriptions 
+    let weatherDesc = document.createElement("ul");
+    //creates a listed item for the day's temperature 
+    let temp = document.createElement("li");
+    temp.textContent = (`Temp: ${data.daily[i].temp.day}℉`);
+
+    //creates a listed item for the day's wind speed
+    let wind = document.createElement("li");
+    wind.textContent = (`Wind: ${data.daily[i].wind_speed} MPH`)
+
+    //creates a listed item for the day's humidity 
+    let humidity = document.createElement("li");
+    humidity.textContent = (`Humidity: ${data.daily[i].humidity}%`);
+
+    weatherDesc.append(temp);
+    weatherDesc.append(wind);
+    weatherDesc.append(humidity);
+
+    weatherBox.append(weatherDesc);
+    weatherEl.appendChild(weatherBox);
+    }
+}
 
 //formats the date 
 const getDate = function(data, index) {
 
-    let unixDate = data.list[index].dt
+    let unixDate = data.daily[index].dt
     let date = new Date(unixDate * 1000);
     
     let month = date.getMonth() +1;
