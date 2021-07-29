@@ -15,9 +15,11 @@ let formSubmitHandler = function() {
 const getWeatherData = function(city) {
     const apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc"
     fetch(apiUrl).then(function(response){
-        response.json().then(function(data) {
-            console.log(data.list[0].main.temp, data.list[0].main.humidity, data.list[0].wind.speed);
-        })        
+        if(response.ok){ 
+            response.json().then(function(data) {
+                console.log(data.list[0].main.temp, data.list[0].main.humidity, data.list[0].wind.speed);
+            })
+        }        
     })
 }
 
