@@ -3,6 +3,7 @@ const weatherEl = document.querySelector("#currentWeather")
 const searchEl = document.querySelector("#searchForm");
 const searchValue = document.querySelector("#search");
 const searchBtnEl = document.querySelector("#search-btn");
+const futureWeather = document.querySelector("#futureWeather");
 
 //funciton which handles search inputs
 let formSubmitHandler = function() {
@@ -111,32 +112,37 @@ const displayWeatherData = function(data, city) {
     displayFutureWeather(data, city);
 };
 
+//get the five day forecast
 displayFutureWeather = function(data,city) {
     console.log(data);
     console.log(city);
-
+    futureWeather.textContent = "";
     for(i=1; i < 6; i++) {
-        let weatherBox = document.createElement("div");
+    let weatherCards = document.createElement("div");
+    weatherCards.className += "card m-2 col-md-8";
     //creates an unordered list to store the weather descriptions 
-    let weatherDesc = document.createElement("ul");
+    let date = document.createElement("h4");
+    date.textContent = (getDate(data, [i]));
+    date.className += "m-2 p-2 ";
+    
     //creates a listed item for the day's temperature 
-    let temp = document.createElement("li");
+    let temp = document.createElement("div");
     temp.textContent = (`Temp: ${data.daily[i].temp.day}℉`);
+    temp.className += "m-2 p-2 ";
 
     //creates a listed item for the day's wind speed
-    let wind = document.createElement("li");
+    let wind = document.createElement("div");
     wind.textContent = (`Wind: ${data.daily[i].wind_speed} MPH`)
+    wind.className += "m-2 p-2 ";
 
     //creates a listed item for the day's humidity 
-    let humidity = document.createElement("li");
+    let humidity = document.createElement("div");
     humidity.textContent = (`Humidity: ${data.daily[i].humidity}%`);
+    humidity.className += "m-2 p-2 ";
 
-    weatherDesc.append(temp);
-    weatherDesc.append(wind);
-    weatherDesc.append(humidity);
-
-    weatherBox.append(weatherDesc);
-    weatherEl.appendChild(weatherBox);
+    weatherCards.append(date, temp, wind, humidity);
+    
+    futureWeather.appendChild(weatherCards);
     }
 }
 
