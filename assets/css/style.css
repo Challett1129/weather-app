@@ -1,3 +1,4 @@
+
 .btn {
     width: 100%;
 }
@@ -8,6 +9,10 @@
     text-align: center;
     color: white;
     padding: 15px;
+}
+
+ul {
+    list-style:none;
 }
 
 hr {
@@ -31,4 +36,20 @@ hr {
 
 .dangerous {
     background-color: red; 
+}
+
+.card1{ 
+    display:inline-block;
+    background-color: #2874A6;
+    color: white;
+    border: 1px solid black;
+}
+
+.weatherToday {
+    border: 1px solid black;
+    font-size: 1.5rem;
+    color: white;
+    background-color:#87CEEB;
+    margin: 25px 0px 25px 0px;
+    padding-left: 15px;
 }

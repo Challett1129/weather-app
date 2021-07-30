@@ -20,16 +20,18 @@
         <div class="container-fluid">
             <form id="searchForm">
                 <div class="row">
-                    <div class="col-12 w col-md-4">
+                    <div class="col-12 col-md-4 flex-column">
                         <h2 class="w-100 m-2">Search for a city:</h2>
                         <input type="text" placeholder="Austin" id="search" autofocus="true" class="form-input w-100 p-3 m-2">
                         <button type="submit" id="search-btn" class="search-border m-2 btn btn-primary">Search</button>
                         <div class = "m-2 w-100 badge-secondary" id="previous-searches">example</div>
                     </div>
-                    <div class="col-12 col-md-8" id="currentWeather"></div>
+                    <div class= "m-2" id="currentWeather">
+                        <div  id="futureWeather"></div>
+                    </div>
                 </div>
             </form>        
-            <div class="col-12 col-md-8" id="futureWeather"></div>
+
 
         </div>
 
