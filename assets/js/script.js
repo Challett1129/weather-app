@@ -5,6 +5,10 @@ const searchValue = document.querySelector("#search");
 const searchBtnEl = document.querySelector("#search-btn");
 const futureWeather = document.querySelector("#futureWeather");
 
+
+//things to do: remove duplicates from array and limit total number allowed in array, print array to screen, fix spacing. 
+let searchedCity = []; 
+
 //funciton which handles search inputs
 let formSubmitHandler = function() {
     event.preventDefault();
@@ -12,8 +16,22 @@ let formSubmitHandler = function() {
     let search = searchValue.value.trim();
     if(search) {
         getCity(search);
+        searchValue.value ="";
     };
 };
+
+if(localStorage.getItem("search")) {
+    searchedCity = JSON.parse(localStorage.getItem("search"));
+}
+
+saveSerach = function() {
+
+    let search = searchValue.value.trim();
+    searchedCity.push(search);
+    localStorage.setItem("search", JSON.stringify(searchedCity));
+
+
+}
 
 //get response from api 
 const getCity = function(city) {
@@ -24,6 +42,7 @@ const getCity = function(city) {
             response.json().then(function(data) {
                 // displayWeatherData(data, city);
                 getWeatherData(data,city);
+
             })
         } else {
             //let user know if there was an issues 
@@ -46,6 +65,7 @@ getWeatherData = function(location, city) {
         if(response.ok) {
             response.json().then(function(data) {
                 displayWeatherData(data, city);
+                saveSerach();
             })
         } else {
             alert("Error: City Not Found");
@@ -71,29 +91,31 @@ const displayWeatherData = function(data, city) {
     timeAndCity.textContent = (`${city.toUpperCase()} ${dateDisplay}`);
     timeAndCity.className += "p-2"
 
-    //creates an unordered list to store the weather descriptions 
+    //creates a div list to store the weather descriptions 
     let weatherDesc = document.createElement("div");
     weatherDesc.className += " p-2";
 
-    //creates a listed item for the day's temperature 
+    //creates a div item for the day's temperature 
     let temp = document.createElement("div");
     temp.textContent = (`Temp: ${data.daily[0].temp.day}℉`);
     temp.className += "p-2";
 
-    //creates a listed item for the day's wind speed
+    //creates a div item for the day's wind speed
     let wind = document.createElement("div");
     wind.textContent = (`Wind: ${data.daily[0].wind_speed} MPH`)
     wind.className += "p-2";
 
-    //creates a listed item for the day's humidity 
+    //creates a div item for the day's humidity 
     let humidity = document.createElement("div");
     humidity.textContent = (`Humidity: ${data.daily[0].humidity}%`);
     humidity.className += "p-2";
 
+    //creates a span for the uv color-coded element
     let uv = data.daily[0].uvi
     let uvSpan = document.createElement("span");
     uvSpan.textContent = uv;
 
+    //creates a div to hold the uv span element
     let uvEl = document.createElement("div");
     if(uv <=3) {
         uvSpan.className += "safe badge"
@@ -103,16 +125,21 @@ const displayWeatherData = function(data, city) {
         uvSpan.className += "dangerous badge";
     } 
 
+    console.log(data.daily[0].weather[0].icon);
     uvEl.textContent = (`UV Index: `);
     uvEl.className += "p-2";
     uvEl.append(uvSpan);
+
+    //create image element for the weather
+    let icon = document.createElement("img") 
+    icon.src = "http://openweathermap.org/img/w/" + data.daily[0].weather[0].icon + ".png";
 
     weatherDesc.append(temp);
     weatherDesc.append(wind);
     weatherDesc.append(humidity);
     weatherDesc.append(uvEl);
     
-
+    timeAndCity.append(icon);
     weatherBox.append(timeAndCity);
     weatherBox.append(weatherDesc);
     weatherEl.appendChild(weatherBox);
@@ -121,35 +148,44 @@ const displayWeatherData = function(data, city) {
 };
 
 //get the five day forecast
-displayFutureWeather = function(data,city) {
+displayFutureWeather = function(data, city) {
     console.log(data);
     console.log(city);
     futureWeather.textContent = "";
+    
+    //create header 
+    let header = document.createElement("h2");
+    header.textContent = "5-day Forecast: "
+    header.className += "col-12"
+    futureWeather.append(header);
     for(i=1; i < 6; i++) {
     let weatherCards = document.createElement("div");
-    weatherCards.className += "col-12 col-lg-3 m-2 card1";
+    weatherCards.className += "col-12 col-lg-4  card1";
+
+    let icon = document.createElement("img");
+    icon.src = "http://openweathermap.org/img/w/" + data.daily[i].weather[0].icon + ".png";
 
     //creates an unordered list to store the weather descriptions 
     let date = document.createElement("h4");
     date.textContent = (getDate(data, [i]));
-    date.className += "m-2 p-2";
+    date.className += " p-2";
     
     //creates a listed item for the day's temperature 
     let temp = document.createElement("div");
     temp.textContent = (`Temp: ${data.daily[i].temp.day}℉`);
-    temp.className += "m-2 p-2";
+    temp.className += " p-2";
 
     //creates a listed item for the day's wind speed
     let wind = document.createElement("div");
     wind.textContent = (`Wind: ${data.daily[i].wind_speed} MPH`)
-    wind.className += "m-2 p-2 ";
+    wind.className += " p-2 ";
 
     //creates a listed item for the day's humidity 
     let humidity = document.createElement("div");
     humidity.textContent = (`Humidity: ${data.daily[i].humidity}%`);
-    humidity.className += "m-2 p-2 ";
+    humidity.className += " p-2 ";
 
-    weatherCards.append(date, temp, wind, humidity);
+    weatherCards.append(date, icon, temp, wind, humidity);
     
     futureWeather.appendChild(weatherCards);
     weatherEl.append(futureWeather);

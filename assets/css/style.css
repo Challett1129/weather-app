@@ -43,6 +43,8 @@ hr {
     background-color: #2874A6;
     color: white;
     border: 1px solid black;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .weatherToday {
