@@ -4,9 +4,10 @@ const searchEl = document.querySelector("#searchForm");
 const searchValue = document.querySelector("#search");
 const searchBtnEl = document.querySelector("#search-btn");
 const futureWeather = document.querySelector("#futureWeather");
-
-
+const prevSearched = document.querySelector("#previous-searches");
+const clearBtn = document.querySelector("#clearBtn");
 //things to do: remove duplicates from array and limit total number allowed in array, print array to screen, fix spacing. 
+
 let searchedCity = []; 
 
 //funciton which handles search inputs
@@ -16,7 +17,6 @@ let formSubmitHandler = function() {
     let search = searchValue.value.trim();
     if(search) {
         getCity(search);
-        searchValue.value ="";
     };
 };
 
@@ -25,12 +25,19 @@ if(localStorage.getItem("search")) {
 }
 
 saveSerach = function() {
-
-    let search = searchValue.value.trim();
-    searchedCity.push(search);
+    let search = searchValue.value.trim().toLowerCase();
+    if(searchedCity.length == 10) {
+        searchedCity.splice(0, 1)
+    }
+    if(searchedCity.includes(search) == false) {
+        searchedCity.push(search);
+    }
     localStorage.setItem("search", JSON.stringify(searchedCity));
-
-
+    
+    let firstCapital = search.substring(0,1).toUpperCase() + search.substring(1);
+    searchValue.value ="";
+    renderSidebar();
+    console.log(firstCapital)
 }
 
 //get response from api 
@@ -192,6 +199,27 @@ displayFutureWeather = function(data, city) {
     }
 }
 
+renderSidebar = function() {
+ prevSearched.innerHTML = ""; 
+ for(i = 0; i < searchedCity.length; i++) {
+    let prevSearch = document.createElement("button");
+    let search = searchedCity[i];
+    let firstCapital = search.substring(0,1).toUpperCase() + search.substring(1);
+    if(search === "") {
+
+    } else {
+        prevSearch.textContent = firstCapital;
+        console.log(prevSearch);
+        prevSearch.className += "sidebarBtn btn-success"
+        prevSearched.append(prevSearch);
+        prevSearch.addEventListener("click", searchByBtn);
+        }
+    }
+}
+
+const searchByBtn = function() {
+    getCity(this.textContent)
+}
 //formats the date 
 const getDate = function(data, index) {
 
@@ -204,5 +232,10 @@ const getDate = function(data, index) {
     
     return dateDisplay = `(${month}/${day}/${year})`;
 };
-
+renderSidebar();
 searchEl.addEventListener("submit", formSubmitHandler);
+clearBtn.addEventListener("click", function(){
+    localStorage.clear();
+    searchedCity = [];
+    prevSearched.innerHTML = ""
+});

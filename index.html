@@ -15,7 +15,7 @@
         <h1>Weather Dashboard</h1>
     </header>
 
-    <main class="flex-row justify-space-between">
+    <main class="flex-row">
         
         <div class="container-fluid">
             <form id="searchForm">
@@ -23,8 +23,10 @@
                     <div class="col-md-12 col-lg-4 flex-column">
                         <h2 class="w-100 m-2">Search for a city:</h2>
                         <input type="text" placeholder="Austin" id="search" autofocus="true" class="form-input w-100 p-3 m-2">
-                        <button type="submit" id="search-btn" class="search-border m-2 btn btn-primary">Search</button>
-                        <div class = "m-2 w-100 badge-secondary" id="previous-searches">example</div>
+                        <button type="submit" id="search-btn" class="search-border m-2 btn btn-primary">Search</button> 
+                        <button class="btn-primary btn m-2" id="clearBtn">Clear Searches</button>
+                        <div class = "m-2 w-100" id="previous-searches">
+                        </div>
                     </div>
                     <div class= "m-2" id="currentWeather">
                         <div  id="futureWeather"></div>
