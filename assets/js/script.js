@@ -22,7 +22,7 @@ let formSubmitHandler = function() {
 
 if(localStorage.getItem("search")) {
     searchedCity = JSON.parse(localStorage.getItem("search"));
-}
+} 
 
 saveSerach = function() {
     let search = searchValue.value.trim().toLowerCase();
@@ -42,7 +42,7 @@ saveSerach = function() {
 
 //get response from api 
 const getCity = function(city) {
-    const apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc"
+    const apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc"
     fetch(apiUrl).then(function(response){
         //check if there is a response
         if(response.ok){ 
@@ -67,8 +67,8 @@ getWeatherData = function(location, city) {
     let lat = location.city.coord.lat
     let lon = location.city.coord.lon
 
-    const apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc`
-    fetch(apiUrl).then(function(response){
+    const apiUrl = `httpss://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc`
+    fetch(apiUrl).then(function(response){  
         if(response.ok) {
             response.json().then(function(data) {
                 displayWeatherData(data, city);
@@ -139,7 +139,7 @@ const displayWeatherData = function(data, city) {
 
     //create image element for the weather
     let icon = document.createElement("img") 
-    icon.src = "http://openweathermap.org/img/w/" + data.daily[0].weather[0].icon + ".png";
+    icon.src = "https://openweathermap.org/img/w/" + data.daily[0].weather[0].icon + ".png";
 
     weatherDesc.append(temp);
     weatherDesc.append(wind);
@@ -170,7 +170,7 @@ displayFutureWeather = function(data, city) {
     weatherCards.className += "col-12 col-lg-4  card1";
 
     let icon = document.createElement("img");
-    icon.src = "http://openweathermap.org/img/w/" + data.daily[i].weather[0].icon + ".png";
+    icon.src = "https://openweathermap.org/img/w/" + data.daily[i].weather[0].icon + ".png";
 
     //creates an unordered list to store the weather descriptions 
     let date = document.createElement("h4");
