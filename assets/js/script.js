@@ -67,7 +67,7 @@ getWeatherData = function(location, city) {
     let lat = location.city.coord.lat
     let lon = location.city.coord.lon
 
-    const apiUrl = `httpss://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc`
+    const apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&units=imperial&appid=bc5897eea54f7f82154e145b1c1db2dc`
     fetch(apiUrl).then(function(response){  
         if(response.ok) {
             response.json().then(function(data) {
